@@ -1,0 +1,11 @@
+.sign-page__save-button {
+  width: 100%;
+  max-width: 358px;
+  height: 50px;
+  background: #FFFFFF;
+  border-radius: 2px;
+  margin: 216px 0 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}

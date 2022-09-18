@@ -1,0 +1,18 @@
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (max-width: 1024px) {
+  .content {
+    width: calc(100% * (918 / 1024));
+    }
+  }
+  
+  @media screen and (max-width: 320px) {
+    .content {
+      width: 282px;
+    }
+  }

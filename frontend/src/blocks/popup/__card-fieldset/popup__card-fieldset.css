@@ -1,0 +1,12 @@
+.popup__card-fieldset {
+  padding: 0;
+  border: none;
+  margin-top: 19px;
+}
+
+
+@media screen and (max-width: 360px) {
+  .popup__card-fieldset {
+    margin-top: 43px;
+  }
+}

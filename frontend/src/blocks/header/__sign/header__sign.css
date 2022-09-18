@@ -1,0 +1,6 @@
+.header__sign {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 46px;
+}
