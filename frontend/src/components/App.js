@@ -38,7 +38,8 @@ function App() {
 
   const history = useHistory();
 
-  const handleLogin = (email) => {
+  const handleLogin = (email, token) => {
+    api.setToken(token);
     setIsLoggedIn(true);
     setUserMail(email);
     getProfile();
@@ -50,7 +51,7 @@ function App() {
       auth.checkToken(token)
       .then((data) => {
         if (data) {
-          handleLogin(data.email);
+          handleLogin(data.email, token);
           history.push("/");
         }
       })
@@ -173,8 +174,8 @@ function App() {
       return;
     }
     return auth.authorize(email, password)
-      .then(() => {
-        handleLogin(email);
+      .then((data) => {
+        handleLogin(email, data.token);
         history.push('/');
       });
   }

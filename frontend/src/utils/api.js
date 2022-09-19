@@ -3,7 +3,10 @@ import { apiOptions } from "./constants.js";
 class Api {
   constructor(options) {
     this._url = options.baseUrl;
-    this._authorization = options.authorization;
+  }
+
+  setToken(token) {
+    this._authorization = `Bearer ${token}`;
   }
 
   _makeRequest({ url, method, contentType, body }) {
