@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    const message = `В Cookies нет jwt-токена. Cookies: ${req.cookies}`;
+    const message = 'В Cookies нет jwt-токена';
     next(new UnauthorizedError(message));
   }
 
