@@ -5,14 +5,14 @@ class Api {
     this._url = options.baseUrl;
   }
 
-  setToken(token) {
-    this._authorization = `Bearer ${token}`;
-  }
+  // setToken(token) {
+  //   this._authorization = `Bearer ${token}`;
+  // }
 
   _makeRequest({ url, method, contentType, body }) {
     const requestInfo =  {
       headers: {
-        authorization: this._authorization
+        //authorization: this._authorization
       }
     };
 
