@@ -61,7 +61,7 @@ const makeRequest = ({ url, method, body, credentials }) => {
   //  Проверяем содержится ли токен в cookies
   export const checkToken = () => {
     return makeRequest({ 
-      credentials: "include",
+      credentials: 'include',
       url: `${BASE_URL}/users/me`,
       method: 'GET'
     })

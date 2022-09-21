@@ -11,6 +11,7 @@ class Api {
 
   _makeRequest({ url, method, contentType, body }) {
     const requestInfo =  {
+      credentials: 'include',
       headers: {
         //authorization: this._authorization
       }

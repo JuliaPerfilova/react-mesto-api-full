@@ -4,12 +4,18 @@ const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
 
+  if (!token) {
+    const message = `В Cookies нет jwt-токена. Cookies: ${req.cookies}`;
+    next(new UnauthorizedError(message));
+  }
+
   let payload;
 
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    next(new UnauthorizedError());
+    const message = `Невалидный jwt-токен в Cookies. jwt-токен: ${token}`;
+    next(new UnauthorizedError(message));
   }
   req.user = payload;
 
