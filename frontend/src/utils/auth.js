@@ -1,17 +1,13 @@
 const BASE_URL = 'https://api.mesto.perfilova.nomoredomains.sbs';
 
-const makeRequest = ({ url, method, body, credentials }) => {
+const makeRequest = ({ url, method, body, token }) => {
   const requestInfo =  {
     headers: {
       'Content-Type': 'application/json'
     }
   };
-  // if ( token !== undefined) {
-  //   requestInfo.headers['Authorization'] = `Bearer ${token}`;
-  // }
-
-  if(credentials !== undefined) {
-    requestInfo.credentials = credentials;
+  if ( token !== undefined) {
+    requestInfo.headers['Authorization'] = `Bearer ${token}`;
   }
 
   if(method !== undefined) {
@@ -49,21 +45,20 @@ const makeRequest = ({ url, method, body, credentials }) => {
     })
     .then(response => response.json())
     .then((data) => {
-      //if (data.token) {
-        //localStorage.setItem('token', data.token);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
         return data;
-      // } else {
-      //   return Promise.reject('Ошибка: ответ на запрос авторизации не содержит поле "token"');
-      // }
+      } else {
+        return Promise.reject('Ошибка: ответ на запрос авторизации не содержит поле "token"');
+      }
     });
   };
 
-  //  Проверяем содержится ли токен в cookies
-  export const checkToken = () => {
-    return makeRequest({ 
-      credentials: 'include',
+  export const checkToken = (token) => {
+    return makeRequest({
       url: `${BASE_URL}/users/me`,
-      method: 'GET'
+      method: 'GET',
+      token
     })
     .then(res => res.json())
     .then(res => res.data)

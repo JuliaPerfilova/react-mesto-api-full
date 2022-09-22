@@ -38,40 +38,27 @@ function App() {
 
   const history = useHistory();
 
-  const handleLogin = (email) => {
-    //api.setToken(token);
+  const handleLogin = (email, token) => {
+    api.setToken(token);
     setIsLoggedIn(true);
     setUserMail(email);
     getProfile();
   }
 
-  // React.useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     auth.checkToken(token)
-  //     .then((data) => {
-  //       if (data) {
-  //         handleLogin(data.email, token);
-  //         history.push("/");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  //   }
-  // }, []);
-
   React.useEffect(() => {
-    auth.checkToken()
-    .then((data) => {
-      if (data) {
-        handleLogin(data.email);
-        history.push("/");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    const token = localStorage.getItem('token');
+    if (token) {
+      auth.checkToken(token)
+      .then((data) => {
+        if (data) {
+          handleLogin(data.email, token);
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
   }, []);
 
   const getProfile = () => {
@@ -177,7 +164,7 @@ function App() {
     setIsLoggedIn(false);
     setCurrentUser({});
     setUserMail('');
-    //localStorage.removeItem('token');
+    localStorage.removeItem('token');
   }
 
   const handleLoginSubmit = (email, password) => {
@@ -186,8 +173,8 @@ function App() {
       return;
     }
     return auth.authorize(email, password)
-      .then(() => {
-        handleLogin(email);
+      .then((data) => {
+        handleLogin(email, data.token);
         history.push('/');
       });
   }

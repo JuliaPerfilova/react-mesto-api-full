@@ -2,20 +2,19 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../utils/errors/UnauthorizedError');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies.jwt;
+  const { authorization } = req.headers;
 
-  if (!token) {
-    const message = 'В Cookies нет jwt-токена';
-    next(new UnauthorizedError(message));
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    next(new UnauthorizedError());
   }
 
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
-    const message = `Невалидный jwt-токен в Cookies. jwt-токен: ${token}`;
-    next(new UnauthorizedError(message));
+    next(new UnauthorizedError('Невалидный jwt-токен'));
   }
   req.user = payload;
 
