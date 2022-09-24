@@ -64,8 +64,8 @@ function App() {
   const getProfile = () => {
     Promise.all([api.getMyProfile(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
-        setCurrentUser(userData);
-        setCards(initialCards);
+        setCurrentUser(userData.data);
+        setCards(initialCards.data);
       })
       .catch((err) => {
         console.log(err);
@@ -74,12 +74,12 @@ function App() {
 
   const handleCardLike = (card) => {
     // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     
     // Отправляем запрос в API и получаем обновлённые данные карточки
     (isLiked ? api.dislikeCard(card._id) : api.likeCard(card._id))
       .then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+        setCards((state) => state.map((c) => c._id === card._id ? newCard.data : c));
       })
       .catch((err) => {
         console.log(err);
@@ -130,7 +130,7 @@ function App() {
   const handleUpdateUser = (userData) => {
     api.updateProfile(userData)
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -141,7 +141,7 @@ function App() {
   const handleUpdateAvatar = (userData) => {
     api.updateAvatar(userData)
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.data);
         closeAllPopups();
       })
       .catch((err) => {
@@ -152,7 +152,7 @@ function App() {
   const handleAddPlaceSubmit = (card) => {
     api.createCard(card)
       .then((newCard) => {
-        setCards([newCard, ...cards]); 
+        setCards([newCard.data, ...cards]); 
         closeAllPopups();
       })
       .catch((err) => {
