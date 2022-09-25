@@ -16,7 +16,6 @@ import Register from './Register.js';
 import ProtectedRoute from './ProtectedRoute.js';
 import InfoTooltip from './InfoTooltip.js';
 import { useHistory } from "react-router-dom";
-import * as auth from '../utils/auth.js';
 
 function App() {
 
@@ -38,8 +37,7 @@ function App() {
 
   const history = useHistory();
 
-  const handleLogin = (email, token) => {
-    api.setToken(token);
+  const handleLogin = (email) => {
     setIsLoggedIn(true);
     setUserMail(email);
     getProfile();
@@ -48,14 +46,16 @@ function App() {
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      auth.checkToken(token)
-      .then((data) => {
-        if (data) {
-          handleLogin(data.email, token);
+      api.setToken(token);
+      api.checkToken()
+      .then((res) => {
+        if (res.data) {
+          handleLogin(res.data.email);
           history.push("/");
         }
       })
       .catch((err) => {
+        api.removeToken();
         console.log(err);
       });
     }
@@ -172,10 +172,16 @@ function App() {
       console.log("Заполнены не все поля")
       return;
     }
-    return auth.authorize(email, password)
+    return api.authorize(email, password)
       .then((data) => {
-        handleLogin(email, data.token);
-        history.push('/');
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          api.setToken(data.token);
+          handleLogin(email);
+          history.push('/');
+        } else {
+          return Promise.reject('Ошибка: ответ на запрос авторизации не содержит поле "token"');
+        }
       });
   }
 
@@ -184,7 +190,7 @@ function App() {
       console.log("Заполнены не все поля")
       return;
     }
-    return auth.register(email, password)
+    return api.register(email, password)
     .then(() => {
       openInfoTooltip(true, 'Вы успешно зарегистрировались!');
       history.push('/sign-in');

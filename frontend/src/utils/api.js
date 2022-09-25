@@ -9,12 +9,16 @@ class Api {
     this._authorization = `Bearer ${token}`;
   }
 
-  _makeRequest({ url, method, contentType, body }) {
+  removeToken() {
+    delete this._authorization;
+  }
+
+  _makeRequest({ url, method, contentType, body, authorized }) {
     const requestInfo =  {
       headers: {}
     };
 
-    if(this._authorization !== undefined) {
+    if(authorized && this._authorization !== undefined) {
       requestInfo.headers.authorization = this._authorization;
     }
 
@@ -47,26 +51,30 @@ class Api {
   likeCard(id) {
     return this._makeRequestAndGetJson({
       url: `${this._url}/cards/${id}/likes`, 
-      method: 'PUT'
+      method: 'PUT',
+      authorized: true
     });
   }
 
   dislikeCard(id) {
     return this._makeRequestAndGetJson({
       url: `${this._url}/cards/${id}/likes`, 
-      method: 'DELETE'
+      method: 'DELETE',
+      authorized: true
     });
   }
 
   getInitialCards() {
     return this._makeRequestAndGetJson({
-      url: `${this._url}/cards`
+      url: `${this._url}/cards`,
+      authorized: true
     });
   }
 
   getMyProfile() {
     return this._makeRequestAndGetJson({
-      url: `${this._url}/users/me`
+      url: `${this._url}/users/me`,
+      authorized: true
     });
   }
 
@@ -75,7 +83,8 @@ class Api {
       url: `${this._url}/users/me`,
       method: 'PATCH',
       contentType: 'application/json',
-      body: JSON.stringify(userInfo)
+      body: JSON.stringify(userInfo),
+      authorized: true
     });
   }
 
@@ -85,7 +94,8 @@ class Api {
       url: `${this._url}/users/me/avatar`,
       method: 'PATCH',
       contentType: 'application/json',
-      body: JSON.stringify({ avatar: avatarLink })
+      body: JSON.stringify({ avatar: avatarLink }),
+      authorized: true
     });
   }
 
@@ -94,14 +104,44 @@ class Api {
       url: `${this._url}/cards`,
       method: 'POST',
       contentType: 'application/json',
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      authorized: true
     });
   }
 
   removeCard(id) {
     return this._makeRequest({
       url: `${this._url}/cards/${id}`, 
-      method: 'DELETE'
+      method: 'DELETE',
+      authorized: true
+    });
+  }
+
+  register(email, password) {
+    return this._makeRequestAndGetJson({
+      url: `${this._url}/signup`,
+      method: 'POST',
+      contentType: 'application/json',
+      body: JSON.stringify({ email, password }),
+      authorized: false
+    });
+  }
+
+  authorize(email, password) {
+    return this._makeRequestAndGetJson({
+      url: `${this._url}/signin`, 
+      method: 'POST',
+      contentType: 'application/json',
+      body: JSON.stringify({ email, password }),
+      authorized: false
+    });
+  };
+
+  checkToken() {
+    return this._makeRequestAndGetJson({
+      url: `${this._url}/users/me`,
+      method: 'GET',
+      authorized: true
     });
   }
 }

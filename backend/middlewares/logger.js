@@ -1,7 +1,7 @@
 const winston = require('winston');
 const expressWinston = require('express-winston');
 
-function customRequestFilter(req, propName) {
+function removeAuthFilter(req, propName) {
   if (propName === 'headers') {
     return Object.keys(req.headers).reduce((filteredHeaders, key) => {
       if (key !== 'authorization') {
@@ -19,7 +19,7 @@ const requestLogger = expressWinston.logger({
     new winston.transports.File({ filename: 'request.log' }),
   ],
   format: winston.format.json(),
-  requestFilter: customRequestFilter,
+  requestFilter: removeAuthFilter,
 });
 
 const errorLogger = expressWinston.errorLogger({
